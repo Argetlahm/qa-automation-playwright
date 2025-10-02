@@ -1,5 +1,6 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+import { execPath } from 'process';
 
 test.beforeEach(async ({ page }) => {
   // Navigate to the base URL before each test
@@ -27,29 +28,44 @@ test("page loaded", async ({ page }) => {
   await expect(page).toHaveURL("https://stephengunawan.com/");
 });
 
-test("open login page invalid", async({ page }) => {
+test("open login page", async ({ page }) => {
   await page.goto("https://stephengunawan.com/opengate");
-  await expect(page).toHaveURL("https://stephengunawan.com/wp-login.php?itsec-hb-token=opengate");
-  await page.getByLabel("Username or Email Address").fill("invalid_user");
-  // await page.getByRole("textbox", {name: "pwd"}).fill("random");
-  // must use evaluate to remove readonly attribute
-  await page.evaluate(() => {
-    const passwordField = document.querySelector("#user_pass");
-    if (passwordField) {
-      passwordField.removeAttribute("readonly");
-    }
-  });
-  await page.locator("#user_pass").fill("random");
-  await page.getByRole("button", { name: "Log In" }).click();
   await page.waitForLoadState("networkidle");
-  const errorMessage = "ERROR: Incorrect Username or Password";
-  await page.evaluate(() => {
-    if (document.querySelector("#login_error p")?.innerHTML.includes("maximum login retries")) {
-      errorMessage = "You have exceeded maximum login retries";
-    }
-  })
-  await expect(page.getByText(errorMessage)).toBeVisible();
-});
+  await expect(page).toHaveURL("https://stephengunawan.com/wp-login.php?itsec-hb-token=opengate");
+  await expect(page.getByText("Username or Email Address")).toBeVisible();
+  await expect(page.getByLabel("Username or Email Address")).toBeVisible();
+  await expect(page.getByText("Password", {exact:true})).toBeVisible();
+  await expect(page.getByLabel("Password", {exact:true})).toBeVisible();
+  await expect(page.getByLabel("Remember Me")).toBeVisible();
+  await expect(page.getByText("Remember Me")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Log In" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Lost your password?" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Go to stephengunawan.com" })).toBeVisible();
+})
+//test sparingly due to login attempt limit
+// test("open login page invalid", async({ page }) => {
+//   await page.goto("https://stephengunawan.com/opengate");
+//   await expect(page).toHaveURL("https://stephengunawan.com/wp-login.php?itsec-hb-token=opengate");
+//   await page.getByLabel("Username or Email Address").fill("invalid_user");
+//   // await page.getByRole("textbox", {name: "pwd"}).fill("random");
+//   // must use evaluate to remove readonly attribute
+//   await page.evaluate(() => {
+//     const passwordField = document.querySelector("#user_pass");
+//     if (passwordField) {
+//       passwordField.removeAttribute("readonly");
+//     }
+//   });
+//   await page.locator("#user_pass").fill("random");
+//   await page.getByRole("button", { name: "Log In" }).click();
+//   await page.waitForLoadState("networkidle");
+//   const errorMessage = "ERROR: Incorrect Username or Password";
+//   await page.evaluate(() => {
+//     if (document.querySelector("#login_error p")?.innerHTML.includes("maximum login retries")) {
+//       errorMessage = "You have exceeded maximum login retries";
+//     }
+//   })
+//   await expect(page.getByText(errorMessage)).toBeVisible();
+// });
 
 
 
