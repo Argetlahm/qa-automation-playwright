@@ -67,16 +67,37 @@ test("open login page", async ({ page }) => {
 //   await expect(page.getByText(errorMessage)).toBeVisible();
 // });
 
-
+test("successful login", async({ page }) => {
+  await page.goto("https://stephengunawan.com/opengate");
+  await expect(page).toHaveURL("https://stephengunawan.com/wp-login.php?itsec-hb-token=opengate");
+  await page.getByLabel("Username or Email Address").fill("test-user");
+  await page.evaluate(() => {
+    const passwordField = document.querySelector("#user_pass");
+    if (passwordField) {
+      passwordField.removeAttribute("readonly");
+    }
+  });
+  await page.locator("#user_pass").fill("tester.Stephen01!");
+  await page.getByRole("button", { name: "Log In" }).click();
+  await page.waitForLoadState("networkidle");
+  await expect(page).toHaveURL("https://stephengunawan.com/wp-admin/profile.php");
+  await expect(page.getByRole("link", {name: "Dashboard" })).toBeVisible();
+  await expect(page.getByText("Howdy, tester01")).toBeVisible();
+  await expect(page.getByLabel("First Name")).toHaveValue("tester01");
+  await page.getByText("Howdy, tester01").hover();
+  await page.getByRole("menuitem", { name: "Log Out" }).click();
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByText("You are now logged out.")).toBeVisible();
+})
 
 // what to test
 // Authentication: /login (valid/invalid login, message assertions, session persistence)
-//     - test open page
-//     - test valid login
-//     - test invalid login
-//     - test logout
-//     - test session persistence (cookie/localStorage)
-//     - test message assertions (success/error messages)
+//     - test open page *done
+//     - test valid login *done
+//     - test invalid login *done
+//     - test logout *done
+//     - test session persistence (cookie/localStorage) ??
+//     - test message assertions (success/error messages) *done
 // Form Inputs: /inputs (numeric input), /checkboxes (toggle states), /dropdown (option selection)
 // Dynamic Loading: /dynamic_loading/1 and /2 (explicit waits for loaded elements)
 // JavaScript Alerts: /javascript_alerts (alert/confirm/prompt handling)
