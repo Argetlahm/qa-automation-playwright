@@ -1,5 +1,6 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+import { randomInt } from 'crypto';
 import { execPath } from 'process';
 
 test.beforeEach(async ({ page }) => {
@@ -90,6 +91,38 @@ test("successful login", async({ page }) => {
   await expect(page.getByText("You are now logged out.")).toBeVisible();
 })
 
+test('test comment form', async ({ page }) => {
+  await page.getByRole('link', { name: 'Analisa Dividen Saham SPMA' }).first().click();
+  await page.waitForLoadState("networkidle");
+  await expect(page).toHaveURL(/.*analisa-dividen-saham-spma.*/);
+  await expect(page.getByText('Leave a reply')).toBeVisible();
+  await expect(page.getByText('Comment *')).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Comment *' })).toBeVisible();
+  await expect(page.getByText('Name *')).toBeVisible();
+  await expect(page.getByText('Email *')).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Name *' })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Email *' })).toBeVisible();
+  await expect(page.getByText('Website', { exact: true })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Website' })).toBeVisible();
+  await expect(page.getByRole('checkbox', { name: 'Save my name, email, and' })).toBeVisible();
+  await expect(page.getByText('Save my name, email, and')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Post Comment' })).toBeVisible();
+  const commentNumber = randomInt(1, 9999);
+  await page.getByRole('textbox', { name: 'Comment *' }).click();
+  await page.getByRole('textbox', { name: 'Comment *' }).fill('sample comment '+commentNumber);
+  await page.getByRole('textbox', { name: 'Name *' }).click();
+  await page.getByRole('textbox', { name: 'Name *' }).fill('test');
+  await page.getByRole('textbox', { name: 'Email *' }).click();
+  await page.getByRole('textbox', { name: 'Email *' }).fill('test@test.com');
+  await page.getByRole('textbox', { name: 'Website' }).click();
+  await page.getByRole('textbox', { name: 'Website' }).fill('nosite');
+  await page.getByRole('checkbox', { name: 'Save my name, email, and' }).check();
+  await page.getByRole('checkbox', { name: 'Save my name, email, and' }).uncheck();
+  await page.getByRole('button', { name: 'Post Comment' }).click();
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByText('Your comment is awaiting')).toBeVisible();
+});
+
 // what to test
 // Authentication: /login (valid/invalid login, message assertions, session persistence)
 //     - test open page *done
@@ -98,7 +131,7 @@ test("successful login", async({ page }) => {
 //     - test logout *done
 //     - test session persistence (cookie/localStorage) ??
 //     - test message assertions (success/error messages) *done
-// Form Inputs: /inputs (numeric input), /checkboxes (toggle states), /dropdown (option selection)
+// Form Inputs: /inputs (numeric input), /checkboxes (toggle states), /dropdown (option selection) *done
 // Dynamic Loading: /dynamic_loading/1 and /2 (explicit waits for loaded elements)
 // JavaScript Alerts: /javascript_alerts (alert/confirm/prompt handling)
 // File Upload: /upload (attach file and assert uploaded filename)
