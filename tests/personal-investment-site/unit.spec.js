@@ -132,13 +132,5 @@ test('test comment form', async ({ page }) => {
 //     - test session persistence (cookie/localStorage) ??
 //     - test message assertions (success/error messages) *done
 // Form Inputs: /inputs (numeric input), /checkboxes (toggle states), /dropdown (option selection) *done
-// Dynamic Loading: /dynamic_loading/1 and /2 (explicit waits for loaded elements)
-// JavaScript Alerts: /javascript_alerts (alert/confirm/prompt handling)
-// File Upload: /upload (attach file and assert uploaded filename)
-// Drag and Drop: /drag_and_drop (HTML5 drag/drop handling)
-// Infinite Scroll: /infinite_scroll (scroll triggers content load)
-// Hovers: /hovers (hover reveals captions/links)
-// Status Codes: /status_codes (validate HTTP statuses via links)
-// Secure Area: /basic_auth (basic auth header handling)
 
 // https://medium.com/@12charmi/testing-login-flows-with-playwright-from-form-fill-to-redirect-testingday2-dc7ebb826928
