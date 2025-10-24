@@ -29,6 +29,25 @@ test("page loaded", async ({ page }) => {
   await expect(page).toHaveURL("https://stephengunawan.com/");
 });
 
+test('test homepage', async ({ page }) => {
+  await expect(page.getByRole('link', { name: 'stephengunawan.com' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
+  await expect(page.locator('#menu-item-167').getByRole('link', { name: 'Data Dividen' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Tentang Saya' })).toBeVisible();
+  await expect(page.getByRole('link', { name: '' })).toBeVisible();
+  await expect(page.getByText('stephengunawan.com © 2025.')).toBeVisible();
+  await expect(page.locator('.slick-featured-wrap')).toBeVisible();
+  await expect(page.locator('.slick-highlights-wrap')).toBeVisible();
+  await expect(page.locator('#page div').filter({ hasText: 'Analisa Dividen Saham SPMA 2025 0 Analisa Saham / Data Emiten October 5, 2025' }).nth(3)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Previous' }).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Next' }).first()).toBeVisible();
+  await page.getByRole('button', { name: 'Next' }).nth(1).click();
+  await page.getByRole('button', { name: 'Previous' }).nth(1).click();
+  await expect(page.getByText('Categories Analisa Saham (11')).toBeVisible();
+  await expect(page.getByText('TagsADMF ADRO Analisa ASII')).toBeVisible();
+  await expect(page.locator('#custom_html-3')).toBeVisible();
+});
+
 test("open login page", async ({ page }) => {
   await page.goto("https://stephengunawan.com/opengate");
   await page.waitForLoadState("networkidle");
@@ -123,13 +142,18 @@ test('test comment form', async ({ page }) => {
   await expect(page.getByText('Your comment is awaiting')).toBeVisible();
 });
 
+
+
 // what to test
+// Home Page: / (page load, title, main sections) *done
+      // - page load
+      // - title
+      // - main sections (header, footer, navigation menu, featured content)
 // Authentication: /login (valid/invalid login, message assertions, session persistence)
 //     - test open page *done
 //     - test valid login *done
 //     - test invalid login *done
 //     - test logout *done
-//     - test session persistence (cookie/localStorage) ??
 //     - test message assertions (success/error messages) *done
 // Form Inputs: /inputs (numeric input), /checkboxes (toggle states), /dropdown (option selection) *done
 
